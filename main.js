@@ -30,6 +30,12 @@ function toggleMenu() {
     overlay.classList.add('show');
     toggle.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
+    header.classList.add('menu-open');
+      if (header.classList.contains('scrolled')) {
+        
+      }else{
+        header.classList.toggle('scrolled');
+      }
   }
 }
 function closeMenu() {
@@ -41,6 +47,8 @@ function closeMenu() {
   overlay.classList.remove('show');
   toggle.setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
+  header.classList.remove('menu-open');
+  header.classList.toggle('scrolled', window.scrollY > 30);
 }
 document.addEventListener('click', (e) => {
   const nav = document.getElementById('nav');
