@@ -1,0 +1,12 @@
+# robots.txt — Biagiovisuals.it
+# https://www.biagiovisuals.it/robots.txt
+
+User-agent: *
+Allow: /
+
+# Blocca file tecnici non utili all'indicizzazione
+Disallow: /contact.php
+Disallow: /*.php$
+
+# Sitemap — fondamentale per Google Search Console
+Sitemap: https://www.biagiovisuals.it/sitemap.xml
