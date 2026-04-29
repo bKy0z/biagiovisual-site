@@ -1,0 +1,70 @@
+# Biagiovisuals — Portfolio + Admin CMS
+
+## Requisiti
+- Node.js 18+
+- npm
+
+## Setup (prima volta)
+
+```bash
+# 1. Installa dipendenze
+npm install
+
+# 2. Crea il file .env (NON committarlo mai su Git)
+cp .env.example .env
+
+# 3. Apri .env e imposta:
+#    ADMIN_PASSWORD=la_tua_password_sicura
+#    SESSION_SECRET=una_stringa_casuale_di_almeno_32_caratteri
+
+# 4. Avvia il server
+npm start
+```
+
+Il sito sarà disponibile su `http://localhost:3000`
+
+## Sicurezza implementata
+
+| Meccanismo | Dettaglio |
+|---|---|
+| Password server-only | Non esiste mai nel codice frontend |
+| Hash HMAC-SHA256 | Password hashata con salt prima del confronto |
+| Timing-safe compare | Previene timing attacks |
+| HttpOnly cookie | Il token di sessione è inaccessibile a JavaScript |
+| Rate limiting login | Max 10 tentativi ogni 15 minuti per IP |
+| Sessione con TTL | Scade automaticamente (default 2 ore) |
+| Headers di sicurezza | Helmet.js (CSP, HSTS, X-Frame, ecc.) |
+| File riservati bloccati | `/server.js`, `/.env`, `/data/*` → 403 |
+| CSRF protection | Cookie SameSite=strict |
+
+## Struttura file
+
+```
+├── index.html        ← frontend del portfolio
+├── style.css         ← stili non critici
+├── main.js           ← JS del portfolio
+├── server.js         ← backend Express (NON esposto)
+├── .env              ← credenziali private (NON committare)
+├── .env.example      ← template sicuro
+├── package.json
+├── .gitignore
+├── uploads/          ← foto caricate (generata automaticamente)
+└── data/
+    └── photos.json   ← metadati foto (generato automaticamente)
+```
+
+## Accesso admin
+
+1. In basso a sinistra del sito compare un piccolo lucchetto dorato
+2. Click → inserisci la password impostata in `.env`
+3. La password viaggia via HTTPS, non esiste nel codice frontend
+4. Il server risponde con un cookie di sessione HttpOnly
+5. Il pannello CMS si apre automaticamente
+
+## Produzione
+
+```bash
+# Imposta NODE_ENV=production nel .env
+# Usa un reverse proxy (nginx/Caddy) con SSL
+# Il cookie Secure funziona solo con HTTPS
+```

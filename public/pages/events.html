@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eventi — Biagiovisuals</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #060606;
+    --surface: #0e0e0e;
+    --gold: #c8a96e;
+    --gold-dim: #8a6f3e;
+    --white: #f0ece4;
+    --muted: #666;
+    --border: rgba(200,169,110,0.18);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(6,6,6,0.95), transparent);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .back-link {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+  }
+  .back-link::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--muted);
+    transition: background 0.3s, width 0.3s;
+  }
+  .back-link:hover { color: var(--gold); }
+  .back-link:hover::before { background: var(--gold); width: 40px; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Immagine di sfondo come elemento separato per gestire il parallax e la saturazione */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    display: block;
+    /* Desatura leggermente per coerenza con la palette dark/gold */
+    filter: saturate(0.7) brightness(0.82);
+    transform: scale(1.04);
+    animation: heroZoom 14s ease-out forwards;
+  }
+
+  @keyframes heroZoom {
+    from { transform: scale(1.07); }
+    to   { transform: scale(1.0); }
+  }
+
+  /* Gradiente multistrato: conserva i dettagli in alto, schiaccia in basso per il testo */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      /* vignetta perimetrale */
+      radial-gradient(ellipse at 60% 40%, transparent 30%, rgba(6,6,6,0.55) 100%),
+      /* gradiente dal basso per leggibilità testo */
+      linear-gradient(
+        to top,
+        rgba(6,6,6,1)   0%,
+        rgba(6,6,6,0.88) 28%,
+        rgba(6,6,6,0.4)  55%,
+        rgba(6,6,6,0.15) 78%,
+        rgba(6,6,6,0.0)  100%
+      );
+  }
+
+  /* Sottile velatura gold sulle ombre per calore */
+  .hero-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, transparent 40%, rgba(200,169,110,0.06) 100%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+  }
+
+  .hero-tag {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--gold);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.35s forwards;
+    /* Lieve text-shadow per staccarsi dall'immagine */
+    text-shadow: 0 2px 40px rgba(6,6,6,0.7), 0 1px 4px rgba(6,6,6,0.5);
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: rgba(240,236,228,0.65);
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.5s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    right: 48px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+  .scroll-hint span {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* ── SECTION: COSA OTTIENI ── */
+  .section-value {
+    padding: 100px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+
+  .section-value h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 24px;
+  }
+
+  .section-value p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: rgba(240,236,228,0.6);
+  }
+
+  .value-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .value-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .value-list li:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .value-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    color: var(--gold-dim);
+    min-width: 24px;
+    padding-top: 2px;
+  }
+
+  .value-text {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgba(240,236,228,0.7);
+  }
+
+  /* ── GALLERY GRID ── */
+  .gallery-wrap {
+    padding: 0 48px 100px;
+  }
+
+  .gallery-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .gallery-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+  }
+
+  .gallery-count {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 340px 260px;
+    gap: 12px;
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    cursor: zoom-in;
+  }
+
+  .gallery-item:first-child {
+    grid-row: 1 / 3;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: block;
+  }
+
+  .gallery-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(6,6,6,0.6), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .gallery-item:hover img { transform: scale(1.06); }
+  .gallery-item:hover::after { opacity: 1; }
+
+  /* ── CTA SECTION ── */
+  .cta-section {
+    padding: 120px 48px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .cta-section::before {
+    content: 'EVENTI';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(5rem, 15vw, 14rem);
+    font-weight: 700;
+    color: rgba(200,169,110,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: -0.02em;
+  }
+
+  .cta-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+
+  .cta-section h2 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .cta-section p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: rgba(240,236,228,0.55);
+    margin-bottom: 44px;
+  }
+
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 36px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-gold::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+  }
+
+  .btn-gold:hover::before { transform: scaleX(1); }
+  .btn-gold span { position: relative; z-index: 1; }
+  .btn-gold:hover span { color: #060606; }
+  .btn-gold:hover { color: #060606; }
+
+  .btn-arrow {
+    position: relative;
+    z-index: 1;
+    font-size: 1rem;
+    transition: transform 0.3s;
+  }
+  .btn-gold:hover .btn-arrow { transform: translateX(4px); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50%       { opacity: 1; transform: scaleY(1.15); }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--gold-dim), transparent);
+    margin: 0 auto 60px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    header { padding: 20px 24px; }
+    .hero { padding: 0 24px 64px; }
+    .section-value { grid-template-columns: 1fr; gap: 40px; padding: 70px 24px; }
+    .gallery-wrap { padding: 0 24px 70px; }
+    .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gallery-item:first-child { grid-row: auto; grid-column: 1 / 3; height: 280px; }
+    .gallery-item { height: 200px; }
+    .cta-section { padding: 80px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="logo">Biagiovisuals</a>
+  <a href="../index.html" class="back-link">Indietro</a>
+</header>
+
+<section class="hero">
+
+  <!-- Immagine di sfondo -->
+  <div class="hero-bg">
+    <!--
+      ISTRUZIONE PER IL WEBMASTER:
+      Sostituisci il src qui sotto con il percorso della tua foto evento reale,
+      es. src="img/hero-evento.jpg"
+      L'immagine ideale è orizzontale, scura, con soggetti/luci suggestive.
+      La foto qui sotto è un placeholder professionale da Unsplash (licenza gratuita).
+    -->
+    <img
+      src="img/Cover-2.webp"
+      alt="Evento — Biagiovisuals"
+      loading="eager"
+      fetchpriority="high"
+    >
+  </div>
+
+  <!-- Gradiente di oscuramento -->
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <p class="hero-tag">Servizi</p>
+    <h1>Ogni <em>evento</em><br>diventa storia.</h1>
+    <p>Racconto eventi trasformandoli in contenuti che emozionano e valorizzano ogni singolo momento.</p>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scorri</span>
+  </div>
+
+</section>
+
+<section style="padding: 100px 48px 0; max-width: 1200px; margin: 0 auto;">
+  <div class="section-value" style="padding: 0; max-width: none;">
+    <div>
+      <p class="section-label">Cosa ottieni</p>
+      <h2>Contenuti che<br>parlano da soli.</h2>
+      <p>Video e foto che catturano energia, emozioni e momenti chiave del tuo evento. Non solo documentazione — narrativa visiva.</p>
+    </div>
+    <ul class="value-list">
+      <li>
+        <span class="value-num">01</span>
+        <span class="value-text">Riprese professionali durante tutto l'evento, dai momenti clou ai dettagli</span>
+      </li>
+      <li>
+        <span class="value-num">02</span>
+        <span class="value-text">Montaggio video emotivo pensato per social, sito e archivio</span>
+      </li>
+      <li>
+        <span class="value-num">03</span>
+        <span class="value-text">Selezione fotografica con editing coerente e di alta qualità</span>
+      </li>
+      <li>
+        <span class="value-num">04</span>
+        <span class="value-text">Consegna rapida per sfruttare subito il momento d'interesse post-evento</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<div style="height: 80px;"></div>
+
+<div class="gallery-wrap">
+  <div class="gallery-header">
+    <h3>Portfolio eventi</h3>
+    <span class="gallery-count">Selezione lavori</span>
+  </div>
+  <div class="gallery">
+      <div class="gallery-item"><img src="img/Eventi-1.webp" alt="Evento 1"></div>
+    <div class="gallery-item"><img src="img/Eventi-2.webp" alt="Evento 2"></div>
+    <div class="gallery-item"><img src="img/Eventi-3.webp" alt="Evento 3"></div>
+    <div class="gallery-item"><img src="img/Eventi-4.webp" alt="Evento 4"></div>
+    <div class="gallery-item"><img src="img/Eventi-5.webp" alt="Evento 5"></div>
+  </div>
+</div>
+
+<section class="cta-section">
+  <div class="cta-inner">
+    <p class="section-label" style="justify-content: center; margin-bottom: 24px;">Perché è importante</p>
+    <h2>Un evento finisce.<br>Il <em>contenuto</em> resta.</h2>
+    <p>Ti aiuto a trasformare ogni evento in uno strumento di marketing permanente: visibilità, credibilità, memoria.</p>
+    <a href="../index.html#contact" class="btn-gold">
+      <span>Parliamone</span>
+      <span class="btn-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     LIGHTBOX
+     ═══════════════════════════════════════════════ -->
+<style>
+  /* ── Overlay ── */
+  .lb-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(4, 4, 4, 0.96);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .lb-overlay.lb-open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── Immagine centrale ── */
+  .lb-img-wrap {
+    position: relative;
+    max-width: 90vw;
+    max-height: 88vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lb-img {
+    max-width: 90vw;
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 2px;
+    display: block;
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    user-select: none;
+    -webkit-user-drag: none;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.8);
+  }
+  .lb-overlay.lb-open .lb-img {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ── Contatore ── */
+  .lb-counter {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(240,236,228,0.35);
+  }
+
+  /* ── Bottone chiudi ── */
+  .lb-close {
+    position: fixed;
+    top: 24px;
+    right: 28px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(200,169,110,0.25);
+    border-radius: 50%;
+    background: rgba(6,6,6,0.6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, background 0.2s;
+    z-index: 10001;
+  }
+  .lb-close:hover {
+    border-color: var(--gold);
+    background: rgba(200,169,110,0.1);
+  }
+  .lb-close svg { width: 16px; height: 16px; }
+
+  /* ── Frecce navigazione ── */
+  .lb-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 50%;
+    background: rgba(6,6,6,0.55);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    z-index: 10001;
+  }
+  .lb-arrow:hover {
+    border-color: var(--gold);
+    background: rgba(200,169,110,0.1);
+  }
+  .lb-arrow svg { width: 18px; height: 18px; }
+  .lb-prev { left: 20px; }
+  .lb-next { right: 20px; }
+  .lb-prev:hover { transform: translateY(-50%) translateX(-2px); }
+  .lb-next:hover { transform: translateY(-50%) translateX(2px); }
+
+  /* Nascondi frecce se c'è 1 sola immagine */
+  .lb-arrow.lb-hidden { display: none; }
+
+  /* ── Linea oro decorativa ── */
+  .lb-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--gold);
+    width: 0;
+    transition: width 0.3s ease;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 600px) {
+    .lb-arrow { width: 40px; height: 40px; }
+    .lb-prev { left: 8px; }
+    .lb-next { right: 8px; }
+  }
+</style>
+
+<!-- Struttura lightbox -->
+<div class="lb-overlay" id="lb" role="dialog" aria-modal="true" aria-label="Visualizzazione immagine">
+  <button class="lb-close" id="lb-close" aria-label="Chiudi">
+    <svg viewBox="0 0 20 20" fill="none" stroke="rgba(240,236,228,0.8)" stroke-width="1.5">
+      <path d="M4 4l12 12M16 4L4 16"/>
+    </svg>
+  </button>
+
+  <button class="lb-arrow lb-prev" id="lb-prev" aria-label="Immagine precedente">
+    <svg viewBox="0 0 20 20" fill="none" stroke="rgba(240,236,228,0.85)" stroke-width="1.5">
+      <path d="M13 4l-7 6 7 6"/>
+    </svg>
+  </button>
+
+  <div class="lb-img-wrap">
+    <img class="lb-img" id="lb-img" src="" alt="">
+  </div>
+
+  <button class="lb-arrow lb-next" id="lb-next" aria-label="Immagine successiva">
+    <svg viewBox="0 0 20 20" fill="none" stroke="rgba(240,236,228,0.85)" stroke-width="1.5">
+      <path d="M7 4l7 6-7 6"/>
+    </svg>
+  </button>
+
+  <div class="lb-counter" id="lb-counter"></div>
+  <div class="lb-bar"    id="lb-bar"></div>
+</div>
+
+<script>
+(function () {
+  /* ── Raccoglie tutte le immagini della gallery ── */
+  const items   = Array.from(document.querySelectorAll('.gallery-item img'));
+  const overlay = document.getElementById('lb');
+  const img     = document.getElementById('lb-img');
+  const counter = document.getElementById('lb-counter');
+  const bar     = document.getElementById('lb-bar');
+  const btnPrev = document.getElementById('lb-prev');
+  const btnNext = document.getElementById('lb-next');
+  const btnClose= document.getElementById('lb-close');
+
+  let current = 0;
+  let touchStartX = 0;
+
+  /* ── Apri ── */
+  function open(index) {
+    current = index;
+    update();
+    overlay.classList.add('lb-open');
+    document.body.style.overflow = 'hidden';
+    img.focus();
+  }
+
+  /* ── Chiudi ── */
+  function close() {
+    overlay.classList.remove('lb-open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── Aggiorna immagine e UI ── */
+  function update() {
+    const el  = items[current];
+    /* Fade out → swap → fade in */
+    img.style.opacity  = '0';
+    img.style.transform = 'scale(0.97)';
+    setTimeout(() => {
+      img.src = el.src;
+      img.alt = el.alt || 'Foto evento Biagiovisuals';
+      img.style.opacity   = '';
+      img.style.transform = '';
+    }, 180);
+
+    counter.textContent = (current + 1) + ' / ' + items.length;
+    bar.style.width = ((current + 1) / items.length * 100) + '%';
+
+    /* Nascondi frecce se c'è solo 1 foto */
+    const single = items.length <= 1;
+    btnPrev.classList.toggle('lb-hidden', single);
+    btnNext.classList.toggle('lb-hidden', single);
+  }
+
+  function prev() { current = (current - 1 + items.length) % items.length; update(); }
+  function next() { current = (current + 1) % items.length; update(); }
+
+  /* ── Click sulle immagini ── */
+  items.forEach((el, i) => {
+    el.closest('.gallery-item').addEventListener('click', () => open(i));
+  });
+
+  /* ── Bottoni UI ── */
+  btnClose.addEventListener('click', close);
+  btnPrev.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+  btnNext.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+
+  /* ── Click su sfondo ── */
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+
+  /* ── Tastiera ── */
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('lb-open')) return;
+    if (e.key === 'Escape')     close();
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+  });
+
+  /* ── Swipe touch (mobile) ── */
+  overlay.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  overlay.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? next() : prev();
+  });
+})();
+</script>
+</body>
+</html>
