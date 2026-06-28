@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Non autorizzato' }, { status: 401 })
   }
 
-  const { storageKeyFull, storageKeyThumb, contentType, title, category } = await request.json()
+  const { storageKeyFull, storageKeyThumb, title, category } = await request.json()
 
   if (!storageKeyFull || !storageKeyThumb || !title || !category) {
     return NextResponse.json({ error: 'Dati mancanti' }, { status: 400 })

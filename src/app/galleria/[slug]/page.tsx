@@ -37,6 +37,7 @@ export default async function GalleryPage({
       title:           true,
       downloadEnabled: true,
       expiresAt:       true,
+      coverPhotoId:    true,
     },
   })
 

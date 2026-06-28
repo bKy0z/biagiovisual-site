@@ -46,7 +46,7 @@ export async function POST(request: NextRequest, { params }: Params) {
     return NextResponse.json({ error: 'Richiesta non valida' }, { status: 400 })
   }
 
-  const { storageKeyFull, storageKeyThumb, filename, contentType, size } = body
+  const { storageKeyFull, storageKeyThumb, filename, size } = body
   if (!storageKeyFull || !storageKeyThumb || !filename) {
     return NextResponse.json({ error: 'Parametri mancanti' }, { status: 400 })
   }
