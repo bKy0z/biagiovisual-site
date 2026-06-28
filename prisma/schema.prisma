@@ -1,0 +1,67 @@
+// Prisma schema — Biagiovisuals Gallery Platform
+// Documentazione: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // DATABASE_URL = connessione pooled (PgBouncer Neon) per l'app serverless
+  url       = env("DATABASE_URL")
+  // DIRECT_URL  = connessione diretta usata solo da prisma migrate/db push
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Galleria fotografica ───────────────────────────────────────────────────
+
+model Gallery {
+  id              String   @id @default(cuid())
+  slug            String   @unique          // slug casuale (non prevedibile) usato nell'URL cliente
+  title           String
+  passwordHash    String                    // bcrypt hash — la password in chiaro non va mai nel DB
+  downloadEnabled Boolean  @default(true)  // l'admin può disabilitare i download
+  coverPhotoId    String?                  // ID della foto di copertina (riferimento soft, no FK)
+  expiresAt       DateTime                 // createdAt + 90 giorni
+  createdAt       DateTime @default(now())
+
+  photos          Photo[]
+}
+
+// ─── Singola foto ───────────────────────────────────────────────────────────
+
+model Photo {
+  id              String   @id @default(cuid())
+  galleryId       String
+  gallery         Gallery  @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  storageKeyFull  String   // chiave R2 dell'originale HD (es. "galleries/slug/full/uuid.jpg")
+  storageKeyThumb String   // chiave R2 dell'anteprima  (es. "galleries/slug/thumb/uuid.jpg")
+  filename        String   // nome file originale, visibile nel download
+  width           Int?
+  height          Int?
+  sizeBytes       BigInt?  // dimensione originale in byte
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+}
+
+// ─── Foto galleria homepage (gestite dal CMS admin inline) ─────────────────
+
+model HomepagePhoto {
+  id              String   @id @default(cuid())
+  storageKeyFull  String
+  storageKeyThumb String
+  category        String   // "eventi" | "ritratti" | "social"
+  title           String
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+}
+
+// ─── Log download ───────────────────────────────────────────────────────────
+
+model DownloadLog {
+  id           String   @id @default(cuid())
+  galleryId    String
+  photoId      String?                  // null = "scarica tutte"
+  downloadedAt DateTime @default(now())
+}

@@ -109,4 +109,4 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-document.querySelectorAll('.fade, .card, .service-card, .process-step, .testimonial-card').forEach(el => observer.observe(el));
+document.querySelectorAll('.fade, .portfolio-card, .feature-item, .service-card, .process-step, .testimonial-card').forEach(el => observer.observe(el));
