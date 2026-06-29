@@ -62,6 +62,32 @@ model HomepagePhoto {
 model DownloadLog {
   id           String   @id @default(cuid())
   galleryId    String
-  photoId      String?                  // null = "scarica tutte"
+  photoId      String?
   downloadedAt DateTime @default(now())
+}
+
+// ─── Analytics — visite pagine ──────────────────────────────────────────────
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  country   String?
+  device    String?  // "mobile" | "desktop"
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path, createdAt])
+}
+
+// ─── Analytics — Web Vitals (LCP, CLS, FCP…) ────────────────────────────────
+
+model WebVital {
+  id        String   @id @default(cuid())
+  name      String   // "LCP" | "CLS" | "FCP" | "TTFB" | "INP"
+  value     Float
+  path      String
+  createdAt DateTime @default(now())
+
+  @@index([name, createdAt])
 }

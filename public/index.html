@@ -3382,6 +3382,53 @@
     bvLoadGallery();
     bvCheckExistingSession();
   </script>
+
+  <!-- ═══ ANALYTICS TRACKING (silenzioso, non blocca il rendering) ═══ -->
+  <script>
+    (function () {
+      // Evita di tracciare più volte nella stessa sessione
+      if (sessionStorage.getItem('bv_pv')) return;
+      sessionStorage.setItem('bv_pv', '1');
+
+      // Pageview
+      fetch('/api/track/pageview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: location.pathname, referrer: document.referrer || null }),
+        keepalive: true
+      }).catch(function () {});
+
+      // LCP — Largest Contentful Paint (via PerformanceObserver nativo)
+      try {
+        var _lcpObs = new PerformanceObserver(function (list) {
+          var entries = list.getEntries();
+          var last = entries[entries.length - 1];
+          if (!last) return;
+          fetch('/api/track/vitals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: 'LCP', value: Math.round(last.startTime), path: location.pathname }),
+            keepalive: true
+          }).catch(function () {});
+          _lcpObs.disconnect();
+        });
+        _lcpObs.observe({ type: 'largest-contentful-paint', buffered: true });
+      } catch (e) {}
+
+      // FCP — First Contentful Paint
+      try {
+        var _fcpEntries = performance.getEntriesByName('first-contentful-paint');
+        if (_fcpEntries.length > 0) {
+          fetch('/api/track/vitals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: 'FCP', value: Math.round(_fcpEntries[0].startTime), path: location.pathname }),
+            keepalive: true
+          }).catch(function () {});
+        }
+      } catch (e) {}
+    })();
+  </script>
 </body>
 
 </html>
