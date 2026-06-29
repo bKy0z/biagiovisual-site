@@ -5,7 +5,7 @@ import { signedReadUrl } from '@/lib/r2'
 import DashboardClient from './DashboardClient'
 
 export const metadata = {
-  title:  'Dashboard — Biagiovisuals Studio',
+  title:  'Dashboard — Biagio Visconti',
   robots: 'noindex',
 }
 

@@ -57,7 +57,7 @@ export default function LoginForm() {
             margin:      0,
             letterSpacing: '-0.02em',
           }}>
-            Biagiovisuals
+            Biagio Visconti
           </h1>
           <p style={{ color: 'rgba(232,224,212,0.45)', fontSize: '0.8rem', marginTop: '6px' }}>
             Pannello di controllo

@@ -30,7 +30,7 @@ function StudioHeader({ onLogout }: { onLogout: () => void }) {
       backdropFilter: 'blur(12px)', zIndex: 10, height: '64px', gap: '32px',
     }}>
       <span style={{ fontFamily: 'Playfair Display, serif', color: '#c9a96e', fontSize: '1.1rem', fontWeight: 700, flexShrink: 0 }}>
-        Biagiovisuals Studio
+        Biagio Visconti
       </span>
       <nav style={{ display: 'flex', gap: '4px', flex: 1 }}>
         {[

@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 // Layout radice condiviso da /studio e /galleria
 // Il sito vetrina (public/index.html) non usa questo layout: è HTML statico.
 export const metadata: Metadata = {
-  title: 'Biagiovisuals',
+  title: 'Biagio Visconti',
   description: 'Fotografia professionale – Napoli',
 }
 

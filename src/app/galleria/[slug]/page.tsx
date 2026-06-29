@@ -18,7 +18,7 @@ export async function generateMetadata({
     select: { title: true },
   })
   return {
-    title: gallery ? `${gallery.title} — Biagiovisuals` : 'Galleria — Biagiovisuals',
+    title: gallery ? `${gallery.title} — Biagio Visconti` : 'Galleria — Biagio Visconti',
     robots: 'noindex',
   }
 }

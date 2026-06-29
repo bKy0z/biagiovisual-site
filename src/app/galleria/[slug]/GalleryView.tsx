@@ -110,7 +110,7 @@ export default function GalleryView({
             <p style={{
               fontFamily: 'Playfair Display, serif', color: 'rgba(255,255,255,0.65)',
               fontSize: '0.75rem', letterSpacing: '0.18em', textTransform: 'uppercase', margin: 0,
-            }}>Biagiovisuals</p>
+            }}>Biagio Visconti</p>
           </div>
 
           <div style={{ position: 'relative', textAlign: 'center', padding: '0 24px' }}>
@@ -195,7 +195,7 @@ export default function GalleryView({
           borderTop: '1px solid rgba(255,255,255,0.05)',
           color: 'rgba(232,224,212,0.15)', fontSize: '0.75rem',
         }}>
-          © {new Date().getFullYear()} Biagiovisuals
+          © {new Date().getFullYear()} Biagio Visconti
         </footer>
       </div>
 

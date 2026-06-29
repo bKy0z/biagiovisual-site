@@ -3,7 +3,7 @@ import { getAdminSession } from '@/lib/session'
 import LoginForm from './LoginForm'
 
 export const metadata = {
-  title:  'Studio — Biagiovisuals',
+  title:  'Studio — Biagio Visconti',
   robots: 'noindex',
 }
 

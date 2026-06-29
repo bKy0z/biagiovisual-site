@@ -5,7 +5,7 @@ import { signedReadUrl } from '@/lib/r2'
 import GalleryManager from './GalleryManager'
 
 export const metadata = {
-  title:  'Gestione galleria — Biagiovisuals Studio',
+  title:  'Gestione galleria — Biagio Visconti',
   robots: 'noindex',
 }
 

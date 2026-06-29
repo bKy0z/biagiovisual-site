@@ -42,7 +42,7 @@ export default function PasswordForm({
         fontFamily: 'Playfair Display, serif', color: '#c9a96e',
         fontSize: '1rem', letterSpacing: '0.08em', marginBottom: '48px',
       }}>
-        Biagiovisuals
+        Biagio Visconti
       </p>
 
       <div style={{
@@ -108,7 +108,7 @@ export default function PasswordForm({
       </div>
 
       <p style={{ marginTop: '40px', color: 'rgba(232,224,212,0.15)', fontSize: '0.78rem' }}>
-        © {new Date().getFullYear()} Biagiovisuals
+        © {new Date().getFullYear()} Biagio Visconti
       </p>
     </div>
   )

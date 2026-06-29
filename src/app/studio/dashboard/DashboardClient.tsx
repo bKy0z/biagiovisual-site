@@ -136,7 +136,7 @@ export default function DashboardClient({ galleries: initial }: { galleries: Gal
         height: '64px', gap: '32px',
       }}>
         <span style={{ fontFamily: 'Playfair Display, serif', color: '#c9a96e', fontSize: '1.1rem', fontWeight: 700, flexShrink: 0 }}>
-          Biagiovisuals Studio
+          Biagio Visconti
         </span>
         {/* Nav tabs */}
         <nav style={{ display: 'flex', gap: '4px', flex: 1 }}>
