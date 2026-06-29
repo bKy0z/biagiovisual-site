@@ -1435,8 +1435,70 @@ footer address a:hover { color: var(--gold) !important; opacity: 1 !important; }
   .features-grid { grid-template-columns: 1fr; }
   .feature-item { border-right: none !important; }
   .feature-item:last-child { border-bottom: none; }
-  .masonry { columns: 1; }
+  .masonry { columns: 2; column-gap: 6px; }
+  .masonry-item { margin-bottom: 6px; border-radius: 10px; }
   .wa-card { padding: 16px 18px; gap: 12px; }
   .wa-card-icon { width: 40px; height: 40px; }
   .wa-card-icon svg { width: 40px; height: 40px; }
+}
+
+/* ════════════════════════════════════════════════════════
+   MOBILE IMPROVEMENTS — touch, leggibilità, layout
+   ======================================================== */
+
+/* Overlay galleria: visibile su mobile (hover non funziona su touch) */
+@media (max-width: 768px) {
+  .masonry-overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.1) 45%, transparent 100%);
+  }
+  .masonry-zoom { display: none; }
+
+  /* Portfolio: freccia e subtitle sempre visibili su touch */
+  .portfolio-card-sub {
+    opacity: .7;
+    transform: translateY(0);
+  }
+  .portfolio-card-arrow {
+    opacity: .8;
+    transform: translateY(0) scale(1);
+    border-color: rgba(201,169,110,.5);
+    background: rgba(201,169,110,.15);
+  }
+
+  /* About: rimuovi bordo decorativo offset che esce dal viewport */
+  .about-img-wrap::before { display: none; }
+  .about-img-wrap { max-width: 100% !important; }
+
+  /* Float WA: mostra su mobile */
+  .float-wa { display: flex; }
+
+  /* Tap target più generosi */
+  .filter-btn { min-height: 42px; }
+  .form-chip { min-height: 40px; }
+}
+
+/* Padding sezioni più compatto su telefoni piccoli */
+@media (max-width: 480px) {
+  section { padding: 60px 16px; }
+  .social-section { padding: 60px 16px; }
+  .gallery-wrap { padding: 0 10px 48px; }
+  .contact-box { padding: 24px 16px; }
+  .feature-item { padding: 28px 20px; }
+  .filter-bar { margin-bottom: 28px; }
+  .section-header { margin-bottom: 44px; }
+}
+
+/* Hero: overlay più coprente su portrait mobile per migliorare contrasto testo */
+@media (max-width: 640px) {
+  .hero-overlay {
+    background:
+      linear-gradient(to bottom, rgba(8,8,8,.45) 0%, rgba(8,8,8,.62) 55%, rgba(8,8,8,.97) 100%),
+      linear-gradient(to right, rgba(8,8,8,.88) 0%, rgba(8,8,8,.6) 55%, rgba(8,8,8,.2) 100%);
+  }
+}
+
+/* Galleria homepage: griglia sempre 2 colonne su mobile */
+@media (max-width: 640px) {
+  .masonry { columns: 2 !important; column-gap: 6px; }
 }
