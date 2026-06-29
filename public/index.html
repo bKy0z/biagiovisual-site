@@ -783,31 +783,61 @@
       }
     }
 
+    /* ── Overlay backdrop quando menu è aperto ── */
+    #navOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: transparent;
+      pointer-events: none;
+      transition: background .35s ease;
+    }
+    #navOverlay.show {
+      background: rgba(0, 0, 0, .55);
+      pointer-events: auto;
+    }
+
     @media(max-width:768px) {
       :root {
         --header-h: 64px
       }
 
+      /* Rimuove backdrop-filter dall'header su mobile: su iOS Safari
+         backdrop-filter su un antenato rende i figli position:fixed
+         posizionati rispetto all'header invece che al viewport */
       header {
-        padding: 0 20px
+        padding: 0 20px;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(8, 7, 6, .95)
+      }
+
+      header.scrolled {
+        background: rgba(8, 7, 6, .98);
+        border-color: rgba(201, 169, 110, .22)
       }
 
       nav {
         position: fixed;
-        top: calc(var(--header-h) + 28px);
+        top: calc(16px + var(--header-h) + 10px); /* header-top + header-height + gap */
         right: 16px;
         bottom: 16px;
-        width: 260px;
+        width: min(280px, calc(100vw - 32px));
         border-radius: 20px;
-        background: rgba(8, 8, 8, .97);
-        backdrop-filter: blur(20px);
+        background: rgba(10, 9, 8, .98);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         flex-direction: column;
         align-items: flex-start;
-        padding: 40px 30px;
-        gap: 24px;
+        padding: 36px 28px 28px;
+        gap: 4px;
         transform: translateX(calc(100% + 32px));
-        transition: transform .4s ease;
-        border: 1px solid rgba(255, 255, 255, .08)
+        transition: transform .38s cubic-bezier(.32,.72,0,1);
+        border: 1px solid rgba(255, 255, 255, .1);
+        box-shadow: -8px 0 48px rgba(0,0,0,.5);
+        z-index: 1001;
+        overflow-y: auto;
+        overscroll-behavior: contain
       }
 
       nav.show {
@@ -815,13 +845,28 @@
       }
 
       nav a {
-        font-size: 15px;
-        opacity: .7
+        font-size: 16px;
+        opacity: .75;
+        padding: 12px 4px;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,.06)
+      }
+
+      nav a:last-child {
+        border-bottom: none
+      }
+
+      nav a:active {
+        opacity: 1;
+        color: var(--gold)
       }
 
       .nav-cta {
         width: 100%;
-        text-align: center
+        text-align: center;
+        margin-top: 12px;
+        border-bottom: none !important;
+        opacity: 1 !important
       }
 
       .menu-toggle {
