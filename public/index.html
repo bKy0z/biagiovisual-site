@@ -1246,44 +1246,6 @@
    ADMIN CMS — stili nativi al design system
 ═══════════════════════════════════════════ */
 
-    /* ── Trigger flottante ── */
-    .admin-trigger {
-      position: fixed;
-      bottom: 88px;
-      left: 24px;
-      z-index: 997;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(8, 8, 8, .7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(201, 169, 110, .18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity .4s, border-color .3s, background .3s, transform .3s;
-      animation: adminFadeIn 1s 4s ease forwards;
-    }
-
-    @keyframes adminFadeIn {
-      to {
-        opacity: .35;
-      }
-    }
-
-    .admin-trigger:hover {
-      opacity: 1 !important;
-      border-color: rgba(201, 169, 110, .6);
-      background: rgba(8, 8, 8, .9);
-      transform: scale(1.08);
-    }
-
-    .admin-trigger svg {
-      width: 18px;
-      height: 18px;
-    }
 
     /* ── Shake animation ── */
     @keyframes shake {
@@ -2687,15 +2649,7 @@
 
   <div id="navOverlay" onclick="closeMenu()"></div>
 
-  <!-- Admin trigger — visibile solo dopo 4s, quasi invisibile -->
-  <button class="admin-trigger" id="adminTrigger" onclick="bvOpenAuth()" aria-label="Accesso area admin" title="Admin">
-    <svg viewBox="0 0 20 20" fill="none" stroke="var(--gold)" stroke-width="1.5" aria-hidden="true">
-      <circle cx="10" cy="7" r="3"/>
-      <path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
-    </svg>
-  </button>
-
-  <!-- ═══ AUTH MODAL ═══ -->
+<!-- ═══ AUTH MODAL ═══ -->
   <div class="auth-modal" id="authModal" role="dialog" aria-modal="true" aria-label="Accesso area admin">
     <div class="auth-card" id="authCard">
       <div class="auth-icon">
