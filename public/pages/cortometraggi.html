@@ -91,66 +91,66 @@
   /* ── HERO ── */
   .hero {
     min-height: 100vh;
-    max-height: 820px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .hero-left {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 140px 56px 80px;
-    background: var(--bg);
-    position: relative;
-  }
-
-  .hero-left::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, var(--gold-dim) 40%, var(--gold-dim) 60%, transparent);
-  }
-
-  .hero-right {
+    padding: 0 56px 80px;
     position: relative;
     overflow: hidden;
-    background: #0a0a0a;
   }
 
-  .hero-right img {
-    width: 100%; height: 100%;
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center 38%;
     display: block;
+    filter: saturate(0.75) brightness(0.78);
+    transform: scale(1.04);
+    animation: heroZoom 16s ease-out forwards;
   }
 
-  .hero-right::after {
+  @keyframes heroZoom {
+    from { transform: scale(1.07); }
+    to   { transform: scale(1.0); }
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse at 65% 35%, transparent 25%, rgba(6,6,6,0.6) 100%),
+      linear-gradient(
+        to top,
+        rgba(6,6,6,1)    0%,
+        rgba(6,6,6,0.9) 26%,
+        rgba(6,6,6,0.45) 55%,
+        rgba(6,6,6,0.15) 78%,
+        rgba(6,6,6,0)    100%
+      );
+  }
+
+  .hero-overlay::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(6,6,6,0.45) 0%, transparent 60%);
+    background: linear-gradient(160deg, transparent 40%, rgba(200,169,110,0.06) 100%);
     pointer-events: none;
   }
 
-  /* filmstrip decoration */
-  .hero-right .filmstrip {
-    position: absolute;
-    bottom: 40px; right: 32px;
+  .hero-content {
+    position: relative;
     z-index: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    opacity: 0.18;
-  }
-  .filmstrip-row {
-    display: flex;
-    gap: 6px;
-  }
-  .filmstrip-hole {
-    width: 10px; height: 10px;
-    border: 1px solid var(--gold);
-    border-radius: 2px;
+    width: 100%;
+    max-width: 720px;
+    min-width: 0;
   }
 
   .hero-tag {
@@ -171,27 +171,28 @@
     background: var(--gold);
   }
 
-  .hero-left h1 {
+  .hero-content h1 {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(3rem, 5vw, 5.5rem);
+    font-size: clamp(3rem, 5.5vw, 5.5rem);
     font-weight: 700;
     line-height: 1.05;
     letter-spacing: -0.02em;
     margin-bottom: 28px;
     opacity: 0;
     animation: fadeUp 0.9s ease 0.35s forwards;
+    text-shadow: 0 2px 40px rgba(6,6,6,0.7), 0 1px 4px rgba(6,6,6,0.5);
   }
 
-  .hero-left h1 em {
+  .hero-content h1 em {
     font-style: italic;
     color: var(--gold);
   }
 
-  .hero-left p {
+  .hero-content p {
     font-size: 1rem;
     line-height: 1.75;
-    color: rgba(240,236,228,0.6);
-    max-width: 400px;
+    color: rgba(240,236,228,0.65);
+    max-width: 420px;
     opacity: 0;
     animation: fadeUp 0.9s ease 0.5s forwards;
   }
@@ -225,6 +226,7 @@
     position: absolute;
     bottom: 36px;
     left: 56px;
+    z-index: 2;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -662,10 +664,7 @@
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     header { padding: 20px 24px; }
-    .hero { grid-template-columns: 1fr; }
-    .hero-right { height: 50vh; }
-    .hero-left { padding: 140px 24px 64px; }
-    .hero-left::after { display: none; }
+    .hero { padding: 0 24px 64px; }
     .hero-meta { gap: 20px; }
     .film-layout {
       grid-template-columns: 1fr;
@@ -689,9 +688,19 @@
 
 <!-- ── HERO ── -->
 <section class="hero">
-  <div class="hero-left">
+  <div class="hero-bg">
+    <img
+      src="../assets/images/branding/copertina_corti.webp"
+      alt="Cortometraggi — Biagio Visconti"
+      loading="eager"
+      fetchpriority="high"
+    >
+  </div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
     <p class="hero-tag">Cortometraggi</p>
-    <h1>Storie che<br>restano<br><em>dentro.</em></h1>
+    <h1>Storie che<br>restano <em>dentro.</em></h1>
     <p>Dal concept alla post-produzione: ogni cortometraggio nasce da un'idea autentica e viene realizzato con cura artigianale.</p>
 
     <div class="hero-meta">
@@ -708,31 +717,11 @@
         <span class="value">∞</span>
       </div>
     </div>
-
-    <div class="scroll-hint">
-      <div class="scroll-line"></div>
-      <span>Guarda</span>
-    </div>
   </div>
-  <div class="hero-right">
-    <img src="../assets/images/branding/copertina_corti.webp" alt="Cortometraggi — Biagio Visconti">
-    <div class="filmstrip">
-      <div class="filmstrip-row">
-        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-        <div class="filmstrip-hole"></div>
-      </div>
-      <div class="filmstrip-row">
-        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-        <div class="filmstrip-hole"></div>
-      </div>
-      <div class="filmstrip-row">
-        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-        <div class="filmstrip-hole"></div>
-      </div>
-    </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Guarda</span>
   </div>
 </section>
 
