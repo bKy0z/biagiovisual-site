@@ -38,6 +38,7 @@ export default async function GalleryPage({
       downloadEnabled: true,
       expiresAt:       true,
       coverPhotoId:    true,
+      passwordHash:    true,
     },
   })
 
@@ -47,7 +48,9 @@ export default async function GalleryPage({
 
   // Admin bypass: se ha sessione admin può vedere la galleria senza password
   const admin   = await getAdminSession()
-  const session = admin ? { galleryId: gallery.id } : await getGallerySession(gallery.id)
+  // Se la galleria non ha password, accesso diretto senza sessione
+  const noPassword = gallery.passwordHash === null
+  const session = admin || noPassword ? { galleryId: gallery.id } : await getGallerySession(gallery.id)
 
   if (!session) {
     return <PasswordForm slug={slug} title={gallery.title} expired={expired} />

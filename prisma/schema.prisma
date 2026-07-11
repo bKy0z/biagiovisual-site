@@ -19,7 +19,7 @@ model Gallery {
   id              String   @id @default(cuid())
   slug            String   @unique          // slug casuale (non prevedibile) usato nell'URL cliente
   title           String
-  passwordHash    String                    // bcrypt hash — la password in chiaro non va mai nel DB
+  passwordHash    String?                   // bcrypt hash — null = galleria senza password
   downloadEnabled Boolean  @default(true)  // l'admin può disabilitare i download
   coverPhotoId    String?                  // ID della foto di copertina (riferimento soft, no FK)
   expiresAt       DateTime                 // createdAt + 90 giorni

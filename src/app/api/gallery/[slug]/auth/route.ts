@@ -41,6 +41,9 @@ export async function POST(
     return NextResponse.json({ error: 'Galleria non trovata' }, { status: 404 })
   }
 
+  if (!gallery.passwordHash) {
+    return NextResponse.json({ error: 'Galleria senza password' }, { status: 400 })
+  }
   const valid = await bcrypt.compare(password, gallery.passwordHash)
   if (!valid) {
     return NextResponse.json({ error: 'Password errata' }, { status: 401 })
