@@ -88,7 +88,7 @@ export default async function GalleryPage({
   const coverPhoto = gallery.coverPhotoId
     ? photos.find(p => p.id === gallery.coverPhotoId) ?? photos[0]
     : photos[0]
-  const coverUrl = coverPhoto ? await signedReadUrl(coverPhoto.storageKeyThumb, 3600) : null
+  const coverUrl = coverPhoto ? await signedReadUrl(coverPhoto.storageKeyFull, 3600) : null
 
   return (
     <GalleryView
