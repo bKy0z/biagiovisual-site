@@ -55,16 +55,16 @@ function fmt(n: number) {
 
 function StudioHeader({ onLogout }: { onLogout: () => void }) {
   return (
-    <header style={{
+    <header className="dash-header" style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '0 32px', borderBottom: '1px solid rgba(255,255,255,0.06)',
       position: 'sticky', top: 0, background: 'rgba(8,8,8,0.97)',
       backdropFilter: 'blur(12px)', zIndex: 10, height: '60px', gap: '24px',
     }}>
-      <span style={{ fontFamily: 'Playfair Display, serif', color: '#c9a96e', fontSize: '1rem', fontWeight: 700, flexShrink: 0 }}>
+      <span className="dash-logo" style={{ fontFamily: 'Playfair Display, serif', color: '#c9a96e', fontSize: '1rem', fontWeight: 700, flexShrink: 0 }}>
         Biagio Visconti
       </span>
-      <nav style={{ display: 'flex', gap: '4px', flex: 1 }}>
+      <nav className="dash-nav" style={{ display: 'flex', gap: '4px', flex: 1 }}>
         {[
           { label: 'Dashboard',     href: '/studio/dashboard' },
           { label: 'Gallerie clienti', href: '/studio/dashboard#galleries' },
@@ -74,7 +74,7 @@ function StudioHeader({ onLogout }: { onLogout: () => void }) {
           return (
             <Link key={href} href={href} style={{
               padding: '5px 14px', borderRadius: '8px', textDecoration: 'none',
-              fontSize: '0.8rem', fontWeight: 500,
+              fontSize: '0.8rem', fontWeight: 500, whiteSpace: 'nowrap',
               background: active ? 'rgba(201,169,110,0.12)' : 'transparent',
               color:      active ? '#c9a96e' : 'rgba(232,224,212,0.35)',
               border:     active ? '1px solid rgba(201,169,110,0.25)' : '1px solid transparent',
@@ -84,9 +84,9 @@ function StudioHeader({ onLogout }: { onLogout: () => void }) {
           )
         })}
       </nav>
-      <button onClick={onLogout} style={{
+      <button onClick={onLogout} className="dash-logout" style={{
         padding: '5px 14px', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '100px', color: 'rgba(232,224,212,0.35)', fontSize: '0.78rem', cursor: 'pointer',
+        borderRadius: '100px', color: 'rgba(232,224,212,0.35)', fontSize: '0.78rem', cursor: 'pointer', flexShrink: 0,
       }}>
         Esci
       </button>
@@ -148,7 +148,7 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ width: '100%', maxWidth: '400px', padding: '40px', background: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px' }}>
+      <div className="create-modal-box" style={{ width: '100%', maxWidth: '400px', padding: '40px', background: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px' }}>
         <h2 style={{ fontFamily: 'Playfair Display, serif', color: '#c9a96e', margin: '0 0 28px', fontSize: '1.2rem' }}>Nuova galleria</h2>
         <form onSubmit={submit}>
           {[
@@ -200,12 +200,33 @@ export default function DashboardClient({
 
   return (
     <div style={{ minHeight: '100vh', background: '#080808', color: '#e8e0d4', fontFamily: 'DM Sans, sans-serif' }}>
+      <style jsx global>{`
+        @media (max-width: 720px) {
+          .dash-header { padding: 0 16px !important; gap: 10px !important; }
+          .dash-logo { font-size: 0.85rem !important; }
+          .dash-nav {
+            overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+          }
+          .dash-nav::-webkit-scrollbar { display: none; }
+          .dash-nav a { padding: 5px 10px !important; font-size: 0.72rem !important; }
+          .dash-logout { padding: 5px 10px !important; font-size: 0.72rem !important; }
+          .dash-main { padding: 16px !important; }
+          .metrics-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .chart-row { grid-template-columns: 1fr !important; }
+          .toppages-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .create-modal-box { padding: 24px !important; }
+        }
+        @media (max-width: 420px) {
+          .metrics-grid { grid-template-columns: 1fr !important; }
+          .toppages-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
       <StudioHeader onLogout={logout} />
 
-      <main style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
+      <main className="dash-main" style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
 
         {/* ── Metriche visite ─────────────────────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
+        <div className="metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
           <MetricCard label="Visite oggi"          value={fmt(analytics.today)} sub="Aggiornato in tempo reale" />
           <MetricCard label="Ultimi 7 giorni"      value={fmt(analytics.week)}  sub="Media: " />
           <MetricCard label="Ultimi 30 giorni"     value={fmt(analytics.month)} accent="#c9a96e" />
@@ -213,7 +234,7 @@ export default function DashboardClient({
         </div>
 
         {/* ── Riga grafico + performance ──────────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '16px', marginBottom: '24px' }}>
+        <div className="chart-row" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '16px', marginBottom: '24px' }}>
 
           {/* Grafico visite 30gg */}
           <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '24px' }}>
@@ -300,7 +321,7 @@ export default function DashboardClient({
         {analytics.topPages.length > 0 && (
           <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '22px 24px', marginBottom: '24px' }}>
             <h3 style={{ margin: '0 0 18px', fontSize: '0.85rem', fontWeight: 600, color: 'rgba(232,224,212,0.8)' }}>Pagine più visitate</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px' }}>
+            <div className="toppages-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px' }}>
               {analytics.topPages.map((p, i) => (
                 <div key={p.path} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
