@@ -44,29 +44,44 @@ export async function GET(
 
   // Crea zip in streaming
   const pass    = new PassThrough()
-  const archive = archiver('zip', { zlib: { level: 5 } })
+  const archive = archiver('zip', { zlib: { level: 1 } }) // level 1 = veloce, minima CPU
   archive.pipe(pass)
 
-  // Scarica ogni foto da R2 e aggiungila allo zip
+  // Scarica tutte le foto in parallelo (max 8 concorrenti), poi aggiunge allo zip in ordine
   ;(async () => {
+    const CONCURRENCY = 8
+
+    // Dividi in batch e scarica in parallelo
+    const results: Array<{ photo: typeof photos[0]; buf: Buffer | null }> = []
+    for (let i = 0; i < photos.length; i += CONCURRENCY) {
+      const batch = photos.slice(i, i + CONCURRENCY)
+      const batchResults = await Promise.all(
+        batch.map(async photo => {
+          try {
+            const buf = await downloadFromR2(photo.storageKeyFull)
+            return { photo, buf }
+          } catch {
+            return { photo, buf: null }
+          }
+        })
+      )
+      results.push(...batchResults)
+    }
+
+    // Aggiunge allo zip in ordine con deduplicazione filename
     const seen = new Set<string>()
-    for (const photo of photos) {
-      try {
-        const buf = await downloadFromR2(photo.storageKeyFull)
-        // Deduplica filename se necessario
-        let name = photo.filename
-        if (seen.has(name)) {
-          const ext   = name.includes('.') ? '.' + name.split('.').pop() : ''
-          const base  = name.slice(0, name.length - ext.length)
-          let counter = 1
-          while (seen.has(`${base}_${counter}${ext}`)) counter++
-          name = `${base}_${counter}${ext}`
-        }
-        seen.add(name)
-        archive.append(buf, { name })
-      } catch {
-        // Foto non accessibile: salta senza bloccare lo zip
+    for (const { photo, buf } of results) {
+      if (!buf) continue
+      let name = photo.filename
+      if (seen.has(name)) {
+        const ext  = name.includes('.') ? '.' + name.split('.').pop()! : ''
+        const base = name.slice(0, name.length - ext.length)
+        let n = 1
+        while (seen.has(`${base}_${n}${ext}`)) n++
+        name = `${base}_${n}${ext}`
       }
+      seen.add(name)
+      archive.append(buf, { name })
     }
     await archive.finalize()
   })()
