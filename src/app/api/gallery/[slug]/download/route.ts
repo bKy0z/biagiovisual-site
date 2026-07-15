@@ -20,6 +20,7 @@ export async function GET(
       title:           true,
       downloadEnabled: true,
       expiresAt:       true,
+      passwordHash:    true,
     },
   })
 
@@ -27,8 +28,9 @@ export async function GET(
   if (!gallery.downloadEnabled) return NextResponse.json({ error: 'Download disabilitato' }, { status: 403 })
   if (gallery.expiresAt < new Date()) return NextResponse.json({ error: 'Galleria scaduta' }, { status: 410 })
 
-  const admin   = await getAdminSession()
-  const session = admin ? { galleryId: gallery.id } : await getGallerySession(gallery.id)
+  const admin      = await getAdminSession()
+  const noPassword = gallery.passwordHash === null
+  const session    = admin || noPassword ? { galleryId: gallery.id } : await getGallerySession(gallery.id)
   if (!session) return NextResponse.json({ error: 'Non autorizzato' }, { status: 401 })
 
   const photos = await prisma.photo.findMany({
